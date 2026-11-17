@@ -1,6 +1,7 @@
 ---
 import '@fontsource-variable/jost/wght.css';
 import '@fontsource/michroma/400.css';
+import michromaWoff2 from '@fontsource/michroma/files/michroma-latin-400-normal.woff2?url';
 import '../styles/site.css';
 import { SITE } from '../../lib/event.js';
 import { baseGraph } from '../data/seo.js';
@@ -14,6 +15,7 @@ const {
   ogImage = '/img/og-fight-and-furious.jpg',
   robots = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
   jsonLd = baseGraph(),
+  preloadHero = null,
   theme = 'dark',
   referrer = 'strict-origin-when-cross-origin',
 } = Astro.props;
@@ -63,6 +65,15 @@ const gsc = import.meta.env.PUBLIC_GSC_VERIFICATION;
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
     <link rel="manifest" href="/site.webmanifest" />
+    <link rel="preload" href={michromaWoff2} as="font" type="font/woff2" crossorigin />
+    {
+      preloadHero && (
+        <>
+          <link rel="preload" as="image" type="image/avif" href={preloadHero.mobile} media="(max-width: 899px) and (orientation: portrait)" fetchpriority="high" />
+          <link rel="preload" as="image" type="image/avif" href={preloadHero.desktop} media="(min-width: 900px), (orientation: landscape)" fetchpriority="high" />
+        </>
+      )
+    }
     {gsc && <meta name="google-site-verification" content={gsc} />}
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
   </head>

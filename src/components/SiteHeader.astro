@@ -1,6 +1,7 @@
 ---
 const path = Astro.url.pathname;
 const links = [
+  { href: '/#scene', label: 'Le concept' },
   { href: '/#rounds', label: 'Les 3 rounds' },
   { href: '/#garage', label: 'Le garage' },
   { href: '/#infos', label: 'Infos' },
@@ -10,6 +11,8 @@ const links = [
 <header class="site-header">
   <div class="wrap header-row">
     <a class="brand" href="/" aria-label="Fight and Furious, accueil">
+      <img class="brand-bc" src="/brand/boxing-center-blanc.png" alt="Boxing Center" width="214" height="100" />
+      <span class="brand-x" aria-hidden="true">x</span>
       <svg class="brand-bars" viewBox="0 0 100 60" aria-hidden="true"><path d="M32 4h16L22 56H6z" /><path d="M55 4h16L45 56H29z" /><path d="M78 4h16L68 56H52z" /></svg>
       <span class="brand-name">Fight and Furious</span>
     </a>

@@ -1,146 +1,240 @@
 ---
 import Base from '../layouts/Base.astro';
+import '../styles/home.css';
 import { DAYS, GARAGE_TRADES, SITE, VENUE, formatEuros } from '../../lib/event.js';
 import { homeGraph } from '../data/seo.js';
-import { HERO_MEDIA } from '../data/media.js';
+import { GALLERY, HERO_MEDIA, MANIFESTO_IMAGES, ROUND_IMAGES, SCENE_FALLBACK, TRADE_IMAGES, img } from '../data/media.js';
 import { FAQ } from '../data/faq.js';
 
 const title = 'Gala de boxe Fight and Furious, 11-13 décembre 2026 | Boxing Center x MOTEKA';
 const description =
-  'Gala de boxe Fight and Furious à Fenouillet : 3 jours de boxe au garage MOTEKA du 11 au 13 décembre 2026. Amateurs élites, loisirs, éducative. Billetterie ouverte.';
-
-const priceFrom = (day) => {
-  const prices = day.tariffs.map((t) => t.price_cents);
-  const min = Math.min(...prices);
-  return min === 0 ? 'Entrée gratuite sur réservation' : `À partir de ${formatEuros(min)}`;
-};
+  'Gala de boxe Fight and Furious à Fenouillet : 3 jours de boxe au garage MOTEKA du 11 au 13 décembre 2026. Amateurs élites, loisirs, éducative. Billets dès 5 EUR.';
 
 const graph = homeGraph();
 graph['@graph'].push({
   '@type': 'FAQPage',
   mainEntity: FAQ.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
 });
+
+const marquee = ['Vendredi - Gala élites', 'Samedi - Boxe loisirs', 'Dimanche - Boxe éducative', 'Garage MOTEKA', 'Fenouillet', 'Ouverture du garage'];
+const steps = [
+  { n: '01', t: 'Trois barres.', s: 'Le logo MOTEKA, trois traits de vitesse.' },
+  { n: '02', t: 'Trois cordes.', s: 'Elles pivotent, se tendent, encerclent le ring.' },
+  { n: '03', t: 'Un ring au milieu du garage.', s: "Les voitures s'écartent sous les faisceaux rouges." },
+  { n: '04', t: 'Trois jours de combat.', s: 'Vendredi, samedi, dimanche. Les gants sont lacés.' },
+];
 ---
 
-<Base title={title} description={description} path="/" jsonLd={graph}>
+<Base title={title} description={description} path="/" jsonLd={graph} preloadHero={{ desktop: HERO_MEDIA.poster, mobile: HERO_MEDIA.posterMobile }}>
+  <div class="shutter" aria-hidden="true">
+    {Array.from({ length: 9 }).map(() => <span />)}
+    <div class="shutter-bars"><i /><i /><i /></div>
+  </div>
+
   <section class="hero" aria-labelledby="hero-title">
     <div
       class="hero-media"
       data-hero-video
-      data-video={HERO_MEDIA.video ? JSON.stringify(HERO_MEDIA.video) : undefined}
-      data-video-mobile={HERO_MEDIA.videoMobile ? JSON.stringify(HERO_MEDIA.videoMobile) : undefined}
+      data-video={JSON.stringify(HERO_MEDIA.video)}
+      data-video-mobile={JSON.stringify(HERO_MEDIA.videoMobile)}
     >
-      {
-        HERO_MEDIA.poster && (
-          <picture>
-            {HERO_MEDIA.posterMobile && <source media="(max-width: 899px) and (orientation: portrait)" srcset={HERO_MEDIA.posterMobile} type="image/avif" />}
-            <source srcset={HERO_MEDIA.poster} type="image/avif" />
-            <img src={HERO_MEDIA.poster} alt="" width="1920" height="1080" fetchpriority="high" decoding="async" />
-          </picture>
-        )
-      }
+      <picture>
+        <source media="(max-width: 899px) and (orientation: portrait)" srcset={HERO_MEDIA.posterMobile} type="image/avif" />
+        <source srcset={HERO_MEDIA.poster} type="image/avif" />
+        <img src={HERO_MEDIA.posterJpg} alt="" width="1280" height="720" fetchpriority="high" decoding="async" />
+      </picture>
     </div>
-    <svg class="hero-bars" viewBox="0 0 100 60" aria-hidden="true"><path d="M32 4h16L22 56H6z" /><path d="M55 4h16L45 56H29z" /><path d="M78 4h16L68 56H52z" /></svg>
+    <div class="hero-grain" aria-hidden="true"></div>
     <div class="wrap hero-content">
-      <span class="kicker">Boxing Center x MOTEKA - Inauguration du garage</span>
-      <h1 id="hero-title" class="display"><span>Fight</span><span>and Furious</span></h1>
-      <p class="lead">{SITE.tagline} Trois jours de boxe sur un ring installé au milieu de l'atelier.</p>
-      <p class="dates">11, 12 et 13 décembre 2026 - {VENUE.name}, {VENUE.city}</p>
-      <div class="cta-row">
-        <a class="btn" href="/billetterie">Prendre mes billets</a>
-        <a class="btn btn-ghost" href="#rounds">Voir les 3 rounds</a>
+      <div class="hero-logos">
+        <img src="/brand/boxing-center.png" alt="Boxing Center" width="214" height="100" />
+        <span>x</span>
+        <img src="/brand/moteka-logo-blanc.svg" alt="MOTEKA" width="240" height="29" />
+      </div>
+      <h1 id="hero-title" class="hero-title" data-split>
+        <span class="line">Fight</span>
+        <span class="line"><em>and</em> Furious</span>
+      </h1>
+      <p class="hero-tag" data-fade>{SITE.tagline}</p>
+      <div class="hero-meta" data-fade>
+        <p><strong>11 - 12 - 13 décembre 2026</strong><br />{VENUE.name}, {VENUE.city}</p>
+        <div class="countdown" data-countdown="2026-12-11T19:30:00+01:00" aria-label="Compte à rebours avant le gala">
+          <div><b data-cd="d">--</b><span>jours</span></div>
+          <div><b data-cd="h">--</b><span>h</span></div>
+          <div><b data-cd="m">--</b><span>min</span></div>
+          <div><b data-cd="s">--</b><span>s</span></div>
+        </div>
+      </div>
+      <div class="cta-row" data-fade>
+        <a class="btn btn-lg" href="/billetterie">Prendre mes billets</a>
+        <a class="btn btn-ghost btn-lg" href="#rounds">Les 3 rounds</a>
       </div>
     </div>
+    <a class="scroll-hint" href="#scene" aria-label="Descendre">Défiler</a>
   </section>
 
-  <section class="section" id="concept" aria-labelledby="concept-title">
-    <div class="wrap">
-      <p class="giant reveal" aria-hidden="true"><span class="fill">Le garage</span></p>
-      <p class="giant reveal" aria-hidden="true">devient le ring</p>
-      <div class="section-head reveal" style="margin-top:28px">
-        <h2 id="concept-title">Trois barres, trois rounds, trois jours</h2>
-        <p class="muted">
-          Les trois barres du logo MOTEKA deviennent les trois rounds du week-end. Pour l'ouverture de son garage à Fenouillet, MOTEKA accueille Boxing
-          Center : les voitures s'écartent, le ring s'installe sous les ponts élévateurs, et la boxe prend la place de la mécanique pendant trois jours.
-        </p>
-      </div>
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      {[0, 1].map(() => marquee.map((m) => <span>{m}</span>))}
     </div>
-  </section>
+  </div>
 
-  <section class="section" id="rounds" aria-labelledby="rounds-title">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <span class="kicker">Programme</span>
-        <h2 id="rounds-title">Les 3 rounds du gala</h2>
+  <section id="scene" class="scene" aria-label="Le garage devient le ring">
+    <div class="scene-sticky">
+      <canvas class="scene-canvas" aria-hidden="true"></canvas>
+      <div class="scene-fallback" aria-hidden="true">
+        <picture>
+          <source srcset={img(SCENE_FALLBACK).avif} type="image/avif" />
+          <img src={img(SCENE_FALLBACK).src} alt="" loading="lazy" width="1600" height="950" />
+        </picture>
       </div>
-      <div class="rounds">
+      <div class="scene-steps">
         {
-          DAYS.map((day) => (
-            <article class={`round reveal ${day.theme === 'light' ? 'theme-light' : ''}`} id={`round-${day.round}`}>
-              <span class="round-num">ROUND {day.round}</span>
-              <h3>{day.title}</h3>
-              <p class="when">
-                {day.label}
-                <br />
-                <span class="muted">
-                  Portes {day.doors.replace(':', 'h')}, début {day.start.replace(':', 'h')}
-                </span>
-              </p>
-              <p class="muted">{day.summary}</p>
-              <p class="price">{priceFrom(day)}</p>
-              <a class="btn block" href={`/billetterie?jour=${day.id}`}>
-                Réserver le round {day.round}
-              </a>
-            </article>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="garage" aria-labelledby="garage-title">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <span class="kicker">L'hôte</span>
-        <h2 id="garage-title">MOTEKA ouvre son garage à Fenouillet</h2>
-        <p class="muted">
-          Garage multimarques au nord de Toulouse, MOTEKA réunit huit métiers sous le même toit. Le gala marque l'inauguration de l'atelier du {VENUE.street}.
-        </p>
-      </div>
-      <div class="trades reveal">
-        {
-          GARAGE_TRADES.map((t, i) => (
-            <div class="trade">
-              <span class="n">{String(i + 1).padStart(2, '0')}</span>
-              <h3>{t.name}</h3>
-              <p>{t.text}</p>
+          steps.map((s, i) => (
+            <div class="scene-step" data-step={i}>
+              <span class="num">{s.n}</span>
+              <p class="t">{s.t}</p>
+              <p class="s">{s.s}</p>
             </div>
           ))
         }
       </div>
-      <p style="margin-top:22px">
-        <a class="btn btn-ghost" href="https://www.moteka.fr" rel="noopener">Découvrir MOTEKA</a>
-      </p>
+      <div class="scene-progress" aria-hidden="true"><i></i></div>
     </div>
   </section>
 
-  <section class="section" id="infos" aria-labelledby="infos-title">
+  <section class="manifesto" aria-labelledby="manifesto-title">
+    <div class="wrap">
+      <h2 id="manifesto-title" class="sr-only">Le garage devient le ring</h2>
+      <p class="giant-line" data-split-scroll>Le garage</p>
+      <p class="giant-line outline" data-split-scroll>devient</p>
+      <p class="giant-line red" data-split-scroll>le ring</p>
+      <div class="manifesto-grid">
+        <figure class="reveal-img" data-parallax="-8">
+          <picture>
+            <source srcset={img(MANIFESTO_IMAGES.big.name).avif} type="image/avif" />
+            <img src={img(MANIFESTO_IMAGES.big.name).src} srcset={img(MANIFESTO_IMAGES.big.name).srcset} sizes="(min-width: 900px) 45vw, 92vw" alt={MANIFESTO_IMAGES.big.alt} loading="lazy" width="1600" height="950" />
+          </picture>
+        </figure>
+        <div class="manifesto-text" data-fade>
+          <p class="kicker">Boxing Center x MOTEKA</p>
+          <p class="lead">
+            Pour l'ouverture de son garage à Fenouillet, MOTEKA pousse les voitures contre les murs. Boxing Center installe un ring sous les ponts élévateurs.
+            Pendant trois jours, la mécanique laisse la place aux combats.
+          </p>
+          <p class="muted">Trois barres dans le logo MOTEKA. Trois cordes autour du ring. Trois rounds, un par jour.</p>
+        </div>
+        <figure class="reveal-img small" data-parallax="10">
+          <picture>
+            <source srcset={img(MANIFESTO_IMAGES.small.name).avif} type="image/avif" />
+            <img src={img(MANIFESTO_IMAGES.small.name).src} srcset={img(MANIFESTO_IMAGES.small.name).srcset} sizes="(min-width: 900px) 30vw, 92vw" alt={MANIFESTO_IMAGES.small.alt} loading="lazy" width="1280" height="720" />
+          </picture>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="rounds" class="rounds-h" aria-labelledby="rounds-title">
+    <div class="rounds-head wrap">
+      <p class="kicker">Programme</p>
+      <h2 id="rounds-title" data-split-scroll>Trois rounds</h2>
+    </div>
+    <div class="rounds-track">
+      {
+        DAYS.map((day) => {
+          const im = img(ROUND_IMAGES[day.id]);
+          return (
+            <article class={`round-panel ${day.theme === 'light' ? 'is-light' : ''}`} id={`round-${day.round}`}>
+              <picture class="round-bg">
+                <source srcset={im.avif} type="image/avif" />
+                <img src={im.src} srcset={im.srcset} sizes="(min-width: 900px) 80vw, 100vw" alt="" loading="lazy" width="1600" height="1067" />
+              </picture>
+              <span class="round-big" aria-hidden="true">0{day.round}</span>
+              <div class="round-body">
+                <p class="kicker">Round {day.round} - {day.weekday}</p>
+                <h3>{day.title}</h3>
+                <p class="round-date">{day.label} 2026 - portes {day.doors.replace(':', 'h')}, début {day.start.replace(':', 'h')}</p>
+                <p class="round-sum">{day.summary}</p>
+                <div class="round-foot">
+                  <span class="round-price">{formatEuros(day.tariffs[0].price_cents)}</span>
+                  <a class="btn" href={`/billetterie?jour=${day.id}`}>Réserver le round {day.round}</a>
+                </div>
+              </div>
+            </article>
+          );
+        })
+      }
+    </div>
+  </section>
+
+  <section id="garage" class="garage" aria-labelledby="garage-title">
+    <div class="wrap garage-grid">
+      <div class="garage-sticky">
+        <p class="kicker">L'hôte - ouverture du garage</p>
+        <h2 id="garage-title" data-split-scroll>MOTEKA ouvre ses portes</h2>
+        <p class="muted">
+          Garage multimarques au nord de Toulouse. Huit métiers sous le même toit, au {VENUE.street} à {VENUE.city}. Le gala marque l'inauguration de l'atelier.
+        </p>
+        <div class="trade-view" aria-hidden="true">
+          {
+            TRADE_IMAGES.map((n, i) => (
+              <picture class={i === 0 ? 'on' : ''} data-trade-img={i}>
+                <source srcset={img(n).avif} type="image/avif" />
+                <img src={img(n).src} alt="" loading="lazy" width="1600" height="1067" />
+              </picture>
+            ))
+          }
+        </div>
+        <a class="btn btn-ghost" href="https://www.moteka.fr" rel="noopener">moteka.fr</a>
+      </div>
+      <ol class="trades-list">
+        {
+          GARAGE_TRADES.map((t, i) => (
+            <li data-trade={i} tabindex="0">
+              <span class="n">{String(i + 1).padStart(2, '0')}</span>
+              <div>
+                <h3>{t.name}</h3>
+                <p>{t.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="gallery" aria-labelledby="gallery-title">
+    <div class="wrap">
+      <p class="kicker">Côté boxe</p>
+      <h2 id="gallery-title" data-split-scroll>Les gants sont lacés</h2>
+    </div>
+    <div class="gallery-rail" data-rail>
+      {
+        GALLERY.map((g, i) => (
+          <figure class={`g-item g${i % 4}`}>
+            <picture>
+              <source srcset={img(g.name).avif} type="image/avif" />
+              <img src={img(g.name).src} srcset={img(g.name).srcset} sizes="(min-width: 900px) 34vw, 80vw" alt={g.alt} loading="lazy" width="1600" height="1067" />
+            </picture>
+          </figure>
+        ))
+      }
+    </div>
+    <p class="wrap credit">Images 3D générées pour Fight and Furious. Images du gala Boxing Center 2023. Garage : MOTEKA.</p>
+  </section>
+
+  <section id="infos" class="infos-sec" aria-labelledby="infos-title">
     <div class="wrap infos">
-      <div class="reveal">
-        <span class="kicker">Infos pratiques</span>
+      <div data-fade>
+        <p class="kicker">Infos pratiques</p>
         <h2 id="infos-title">Venir au gala</h2>
         <div class="card">
-          <p>
-            <strong>{VENUE.name}</strong><br />
-            {VENUE.street}, {VENUE.postalCode} {VENUE.city}
-          </p>
-          <p class="muted">
-            Billets nominatifs avec QR code, envoyés par e-mail. Un billet par personne et par jour, contrôlé à l'entrée. Six billets maximum par commande.
-          </p>
+          <p><strong>{VENUE.name}</strong><br />{VENUE.street}, {VENUE.postalCode} {VENUE.city}</p>
+          <p class="muted">Billets nominatifs avec QR code, envoyés par e-mail. Un billet par personne et par jour, contrôlé à l'entrée. Six billets maximum par commande.</p>
           <a class="btn btn-ghost" href={VENUE.mapsUrl} rel="noopener">Itinéraire</a>
         </div>
       </div>
-      <div class="faq reveal">
+      <div class="faq" data-fade>
         <h2>Questions fréquentes</h2>
         {
           FAQ.map((f) => (
@@ -154,7 +248,15 @@ graph['@graph'].push({
     </div>
   </section>
 
+  <section class="final" aria-labelledby="final-title">
+    <div class="wrap">
+      <h2 id="final-title" class="final-title" data-split-scroll>Prenez place</h2>
+      <p class="muted">Vendredi 15 EUR - Samedi 10 EUR - Dimanche 5 EUR</p>
+      <a class="btn btn-lg" href="/billetterie">Ouvrir la billetterie</a>
+    </div>
+  </section>
+
   <script>
-    import '../scripts/hero-video.js';
+    import '../scripts/home.js';
   </script>
 </Base>

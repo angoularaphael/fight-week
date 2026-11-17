@@ -1,0 +1,232 @@
+/* Collision 3D + offre. Mobile d'abord. */
+.crash {
+  position: relative;
+  height: 320vh;
+  background: #0a0a0a;
+}
+
+.crash-sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.crash-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.crash.has-webgl .crash-canvas {
+  opacity: 1;
+}
+
+.crash-fallback {
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+}
+
+.crash-fallback img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.crash.has-webgl .crash-fallback {
+  display: none;
+}
+
+.crash-flash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle at 50% 55%, #ffffff 0%, rgba(255, 210, 210, 0.9) 18%, rgba(209, 20, 20, 0.75) 45%, rgba(122, 0, 0, 0) 80%);
+  mix-blend-mode: screen;
+}
+
+.crash-captions {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: 92px;
+  pointer-events: none;
+}
+
+.crash-cap {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: 560px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.45s ease, transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.crash-cap.on {
+  opacity: 1;
+  transform: none;
+}
+
+.crash-cap .t {
+  font-family: var(--display, 'Michroma', sans-serif);
+  text-transform: uppercase;
+  font-size: clamp(26px, 6.5vw, 64px);
+  line-height: 1;
+  margin: 0 0 8px;
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.85);
+}
+
+.crash-cap .s {
+  margin: 0;
+  color: #d0d0d0;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
+}
+
+.crash-offer {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 56px;
+  padding: 22px 20px;
+  background: rgba(20, 20, 20, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 4px solid var(--red, #d11414);
+  border-radius: 3px;
+  backdrop-filter: blur(8px);
+  max-width: 520px;
+  opacity: 0;
+  transform: translateY(40px);
+  pointer-events: none;
+  transition: opacity 0.6s ease, transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.crash-offer.on {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.crash-kicker {
+  margin: 0 0 8px;
+  color: var(--steel, #999b9a);
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.crash-offer h2 {
+  font-family: var(--display, 'Michroma', sans-serif);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: clamp(20px, 4vw, 30px);
+  margin: 0 0 6px;
+}
+
+.crash-price {
+  font-family: var(--display, 'Michroma', sans-serif);
+  margin: 0;
+  font-size: 22px;
+  color: var(--steel, #999b9a);
+}
+
+.crash-price span {
+  font-size: clamp(56px, 14vw, 110px);
+  line-height: 1;
+  color: var(--red, #d11414);
+}
+
+.crash-text {
+  margin: 6px 0 18px;
+  color: #d8d8d8;
+}
+
+.crash-offer .btn {
+  width: 100%;
+}
+
+.crash-progress {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 24px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.crash-progress i {
+  display: block;
+  height: 100%;
+  background: var(--red, #d11414);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+@media (min-width: 900px) {
+  .crash-captions {
+    left: 6vw;
+    top: 14vh;
+  }
+  .crash-offer {
+    left: auto;
+    right: 6vw;
+    bottom: 12vh;
+    padding: 30px 34px;
+  }
+  .crash-offer .btn {
+    width: auto;
+  }
+  .crash-progress {
+    left: 6vw;
+    right: 6vw;
+    bottom: 6vh;
+  }
+}
+
+/* Mouvement reduit ou sans WebGL : bloc statique, offre visible. */
+.crash.is-static {
+  height: auto;
+}
+
+.crash.is-static .crash-sticky {
+  position: relative;
+  height: auto;
+  min-height: 80svh;
+}
+
+.crash.is-static .crash-offer {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.crash.is-static .crash-captions,
+.crash.is-static .crash-progress {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crash {
+    height: auto;
+  }
+  .crash-sticky {
+    position: relative;
+    height: auto;
+    min-height: 80svh;
+  }
+  .crash-offer {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+  .crash-captions,
+  .crash-progress {
+    display: none;
+  }
+}

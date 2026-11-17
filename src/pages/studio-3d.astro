@@ -1,0 +1,17 @@
+---
+// Page outil (non publiee : supprimee apres generation). Rend les plans fixes de la scene 3D.
+---
+
+<html lang="fr">
+  <head><meta name="robots" content="noindex" /><style>html,body{margin:0;background:#000;overflow:hidden}canvas{display:block;width:100vw;height:100vh}</style></head>
+  <body>
+    <canvas id="c"></canvas>
+    <script>
+      import { createScene } from '../scripts/scene3d.js';
+      const s = await createScene(document.getElementById('c'), { mobile: false });
+      for (let i = 0; i < 100 && !s.carReady(); i++) await new Promise((r) => setTimeout(r, 200));
+      window.__still = (o) => s.still(o);
+      window.__ready = true;
+    </script>
+  </body>
+</html>

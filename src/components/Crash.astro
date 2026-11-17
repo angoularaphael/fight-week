@@ -1,0 +1,56 @@
+---
+/**
+ * Collision 3D : deux voitures se percutent, l'impact libere l'offre promo.
+ * Contenu de l'offre : a ajuster ici uniquement.
+ */
+import '../styles/crash.css';
+
+const OFFER = {
+  price: 40,
+  title: 'Offre Fight and Furious',
+  text: 'Disponible uniquement sur ce site',
+  cta: '/billetterie#offre',
+  ctaLabel: "J'en profite",
+};
+
+const captions = [
+  { t: 'Deux moteurs.', s: 'Rouge contre graphite, plein gaz dans le garage.' },
+  { t: "L'impact.", s: 'Le choc libère quelque chose.' },
+  { t: `${OFFER.price} EUR.`, s: OFFER.text },
+];
+---
+
+<section id="offre-crash" class="crash" aria-labelledby="crash-title" data-price={OFFER.price}>
+  <div class="crash-sticky">
+    <canvas class="crash-canvas" aria-hidden="true"></canvas>
+    <div class="crash-fallback" aria-hidden="true">
+      <picture>
+        <source srcset="/media/rendu-voiture-ring-1600.avif" type="image/avif" />
+        <img src="/media/rendu-voiture-ring-1600.webp" alt="" loading="lazy" width="1600" height="950" />
+      </picture>
+    </div>
+    <div class="crash-flash" aria-hidden="true"></div>
+    <div class="crash-captions" aria-hidden="true">
+      {
+        captions.map((c, i) => (
+          <div class="crash-cap" data-cap={i}>
+            <p class="t">{c.t}</p>
+            <p class="s">{c.s}</p>
+          </div>
+        ))
+      }
+    </div>
+    <div class="crash-offer">
+      <p class="crash-kicker">Exclusivité site</p>
+      <h2 id="crash-title">{OFFER.title}</h2>
+      <p class="crash-price"><span>{OFFER.price}</span> EUR</p>
+      <p class="crash-text">{OFFER.text}</p>
+      <a class="btn btn-lg" href={OFFER.cta}>{OFFER.ctaLabel}</a>
+    </div>
+    <div class="crash-progress" aria-hidden="true"><i></i></div>
+  </div>
+</section>
+
+<script>
+  import '../scripts/crash.js';
+</script>

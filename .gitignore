@@ -1,9 +1,11 @@
-node_modules/
-dist/
-.vercel/
+!.env.example
+*.log
 .astro/
 .env
 .env.*
-!.env.example
+.media-tmp/
+.vercel/
 data/
-*.log
+dist/
+media-src/seq/
+node_modules/

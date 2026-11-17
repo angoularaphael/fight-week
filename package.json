@@ -13,7 +13,8 @@
     "icons": "node scripts/icons.mjs",
     "test": "node --test test/*.test.js",
     "test:db": "node --test test-db/*.test.js",
-    "check:site": "node scripts/check-site.mjs"
+    "check:site": "node scripts/check-site.mjs",
+    "media": "node scripts/media.mjs"
   },
   "engines": {
     "node": ">=22.12.0"
@@ -25,8 +26,13 @@
     "@vercel/functions": "3.11.3",
     "astro": "5.18.2",
     "gsap": "3.15.1",
+    "lenis": "1.3.27",
     "pdfkit": "0.17.2",
     "qrcode": "1.5.4",
-    "sharp": "0.34.5"
+    "sharp": "0.34.5",
+    "three": "0.187.0"
+  },
+  "devDependencies": {
+    "@gltf-transform/cli": "4.5.1"
   }
 }

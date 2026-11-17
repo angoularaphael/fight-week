@@ -1,0 +1,10 @@
+---
+import Base from '../layouts/Base.astro';
+import Crash from '../components/Crash.astro';
+---
+
+<Base title="Test collision" description="Page de test temporaire." path="/crash-test" robots="noindex" jsonLd={null}>
+  <div style="height:60vh"></div>
+  <Crash />
+  <div style="height:80vh"></div>
+</Base>

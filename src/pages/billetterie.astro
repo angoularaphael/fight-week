@@ -10,7 +10,11 @@ const publicDays = DAYS.map((d) => ({ id: d.id, round: d.round, label: d.label, 
 ---
 
 <Base title={title} description={description} path="/billetterie" jsonLd={baseGraph(DAYS.map(eventLd))}>
-  <section class="page-head">
+  <section class="page-head page-head-img">
+    <picture class="ph-bg" aria-hidden="true">
+      <source srcset="/media/rendu-voiture-ring-1600.avif" type="image/avif" />
+      <img src="/media/rendu-voiture-ring-1600.webp" alt="" width="1600" height="950" fetchpriority="high" />
+    </picture>
     <div class="wrap">
       <span class="kicker">Billetterie</span>
       <h1 class="display">Prenez place au bord du ring</h1>
