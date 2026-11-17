@@ -33,7 +33,7 @@ function buyer(extra = {}) {
     last_name: 'Martin',
     accept_cgv: true,
     day: 'ven',
-    items: [{ tariff: 'adulte', qty: 2 }],
+    items: [{ tariff: 'entree', qty: 2 }],
     provider: 'payplug',
     pow: solvedPow(),
     ...extra,
@@ -71,17 +71,17 @@ async function newPaidCapableOrder(db, store, extra) {
 // ---------------------------------------------------------------- Prix
 
 test('prix recalcules cote serveur : le prix envoye par le client est ignore', () => {
-  const p = priceOrder({ day: 'ven', items: [{ tariff: 'adulte', qty: 2, price_cents: 1 }], amount_cents: 1 });
+  const p = priceOrder({ day: 'ven', items: [{ tariff: 'entree', qty: 2, price_cents: 1 }], amount_cents: 1 });
   assert.equal(p.amount_cents, 2 * getDay('ven').tariffs[0].price_cents);
 });
 
 test('prix : tarif inconnu, quantite hors bornes, plus de 6 billets, jour inconnu refuses', () => {
   assert.throws(() => priceOrder({ day: 'ven', items: [{ tariff: 'vip', qty: 1 }] }), /Tarif/);
-  assert.throws(() => priceOrder({ day: 'ven', items: [{ tariff: 'adulte', qty: -1 }] }));
-  assert.throws(() => priceOrder({ day: 'ven', items: [{ tariff: 'adulte', qty: 1.5 }] }));
-  assert.throws(() => priceOrder({ day: 'ven', items: [{ tariff: 'adulte', qty: 4 }, { tariff: 'reduit', qty: 3 }] }), /6 billets/);
-  assert.throws(() => priceOrder({ day: 'lun', items: [{ tariff: 'adulte', qty: 1 }] }));
-  assert.throws(() => priceOrder({ day: 'ven', items: [{ tariff: 'adulte', qty: 1 }, { tariff: 'adulte', qty: 1 }] }));
+  assert.throws(() => priceOrder({ day: 'ven', items: [{ tariff: 'entree', qty: -1 }] }));
+  assert.throws(() => priceOrder({ day: 'ven', items: [{ tariff: 'entree', qty: 1.5 }] }));
+  assert.throws(() => priceOrder({ day: 'ven', items: [{ tariff: 'entree', qty: 7 }] }));
+  assert.throws(() => priceOrder({ day: 'lun', items: [{ tariff: 'entree', qty: 1 }] }));
+  assert.throws(() => priceOrder({ day: 'ven', items: [{ tariff: 'entree', qty: 1 }, { tariff: 'entree', qty: 1 }] }));
 });
 
 test('jauge vendable = 97 % de la capacite', () => {
@@ -135,12 +135,10 @@ test('checkout PayPlug : commande en attente, provider_id stocke, jeton verifie 
   assert.equal(await orderByToken(db, order.ref, `${token.slice(0, -1)}A`), null);
 });
 
-test('checkout dimanche gratuit : billets crees sans prestataire', async () => {
-  const db = createMemoryDb();
-  const { order } = await createCheckout(db, req(), buyer({ day: 'dim', items: [{ tariff: 'entree', qty: 3 }], provider: undefined }));
-  const saved = await db.getOrder(order.id);
-  assert.equal(saved.status, 'paid');
-  assert.equal((await db.getTickets(order.id)).length, 3);
+test('prix confirmes : 15 EUR vendredi, 10 EUR samedi, 5 EUR dimanche', () => {
+  assert.equal(priceOrder({ day: 'ven', items: [{ tariff: 'entree', qty: 1 }] }).amount_cents, 1500);
+  assert.equal(priceOrder({ day: 'sam', items: [{ tariff: 'entree', qty: 1 }] }).amount_cents, 1000);
+  assert.equal(priceOrder({ day: 'dim', items: [{ tariff: 'entree', qty: 3 }] }).amount_cents, 1500);
 });
 
 test('jauge : reservations concurrentes au-dela de la jauge, une seule passe', async () => {
@@ -151,8 +149,8 @@ test('jauge : reservations concurrentes au-dela de la jauge, une seule passe', a
   const results = await withFetch(
     () =>
       Promise.allSettled([
-        createCheckout(db, req('10.0.0.2'), buyer({ email: 'a@example.com', items: [{ tariff: 'adulte', qty: 3 }] })),
-        createCheckout(db, req('10.0.0.3'), buyer({ email: 'b@example.com', items: [{ tariff: 'adulte', qty: 3 }] })),
+        createCheckout(db, req('10.0.0.2'), buyer({ email: 'a@example.com', items: [{ tariff: 'entree', qty: 3 }] })),
+        createCheckout(db, req('10.0.0.3'), buyer({ email: 'b@example.com', items: [{ tariff: 'entree', qty: 3 }] })),
       ]),
     mockPayplugFetch(store)
   );
@@ -243,7 +241,7 @@ async function paypalOrder(db) {
     first_name: 'P',
     last_name: 'P',
     day: 'sam',
-    items: [{ tariff: 'adulte', label: 'Adulte', qty: 3, unit_cents: 1000 }],
+    items: [{ tariff: 'entree', label: 'Entrée', qty: 3, unit_cents: 1000 }],
     quantity: 3,
     amount_cents: 3000,
     provider: 'paypal',
