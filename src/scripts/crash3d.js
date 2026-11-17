@@ -399,6 +399,8 @@ export async function createCrash(canvas, { mobile = false, price = 40 } = {}) {
     camera.aspect = w / h;
     camera.fov = w / h < 0.8 ? 50 : 36;
     camera.updateProjectionMatrix();
+    // setSize efface le canvas : on redessine tout de suite (la boucle peut etre en pause).
+    if (typeof draw === 'function') draw(clock.getElapsedTime());
   }
 
   function draw(t) {
