@@ -130,8 +130,8 @@ function heroVideo(w, h, tag) {
   const master = path.join(tmp, `hero-${tag}-master.mp4`);
   ff([...shots.flatMap((s) => ['-i', s]), '-filter_complex', filter, '-map', '[v]', '-an', '-c:v', 'libx264', '-crf', '14', '-preset', 'medium', master]);
 
-  ff(['-i', master, '-an', '-c:v', 'libx264', '-profile:v', 'high', '-crf', '27', '-preset', 'slow', '-movflags', '+faststart', '-pix_fmt', 'yuv420p', path.join(out, `hero-${tag}.h264.mp4`)]);
-  ff(['-i', master, '-an', '-c:v', 'libsvtav1', '-crf', '38', '-preset', '6', '-movflags', '+faststart', '-pix_fmt', 'yuv420p', path.join(out, `hero-${tag}.av1.mp4`)]);
+  ff(['-i', master, '-an', '-c:v', 'libx264', '-profile:v', 'high', '-crf', '29', '-preset', 'slow', '-maxrate', '1400k', '-bufsize', '2800k', '-movflags', '+faststart', '-pix_fmt', 'yuv420p', path.join(out, `hero-${tag}.h264.mp4`)]);
+  ff(['-i', master, '-an', '-c:v', 'libsvtav1', '-crf', '42', '-preset', '6', '-movflags', '+faststart', '-pix_fmt', 'yuv420p', path.join(out, `hero-${tag}.av1.mp4`)]);
   // Poster = combat du gala (image LCP, doit claquer).
   const png = path.join(tmp, `poster-${tag}.png`);
   ff(['-ss', '2.8', '-i', master, '-frames:v', '1', png]);

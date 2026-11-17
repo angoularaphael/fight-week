@@ -110,8 +110,10 @@ async function offerTexture(price) {
 }
 
 export async function createCrash(canvas, { mobile = false, price = 40 } = {}) {
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: !mobile, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 1.3 : 1.75));
+  // Ecran haute densite : pas d'antialiasing (le pixel ratio suffit), ratio plafonne.
+  const dpr = window.devicePixelRatio || 1;
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: !mobile && dpr < 1.5, powerPreference: 'high-performance' });
+  renderer.setPixelRatio(Math.min(dpr, mobile ? 1.15 : 1.5));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.1;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -164,11 +166,10 @@ export async function createCrash(canvas, { mobile = false, price = 40 } = {}) {
   const key = new THREE.SpotLight(0xffffff, 70, 30, Math.PI / 5, 0.7, 1.4);
   key.position.set(0, 10, 6);
   key.target.position.set(0, 0, 0);
-  [spotL, spotR, key].forEach((l) => {
-    l.castShadow = !mobile;
-    l.shadow.mapSize.set(1024, 1024);
-    scene.add(l, l.target);
-  });
+  // Une seule lumiere porte les ombres (3 cartes d'ombre = 3 passes de rendu en plus).
+  [spotL, spotR, key].forEach((l) => scene.add(l, l.target));
+  key.castShadow = !mobile;
+  key.shadow.mapSize.set(512, 512);
   const rim = new THREE.DirectionalLight(0xffffff, 1.1);
   rim.position.set(0, 5, -8);
   scene.add(rim);
@@ -219,7 +220,7 @@ export async function createCrash(canvas, { mobile = false, price = 40 } = {}) {
   scene.add(redRig, blackRig);
 
   // Etincelles
-  const N = mobile ? 260 : 700;
+  const N = mobile ? 180 : 450;
   const rand = rng(7);
   const sparkPos = new Float32Array(N * 3);
   const sparkVel = [];
@@ -406,13 +407,22 @@ export async function createCrash(canvas, { mobile = false, price = 40 } = {}) {
     renderer.render(scene, camera);
   }
 
+  // Rendu a la demande : la boucle s'arrete des que la scene est stable
+  // (defilement arrete) et repart au prochain setProgress.
+  let idle = 0;
   function frame() {
     raf = 0;
     if (!visible) return;
-    shown += (progress - shown) * 0.18;
-    if (Math.abs(progress - shown) < 0.0005) shown = progress;
+    const moving = Math.abs(progress - shown) > 0.0005;
+    shown = moving ? shown + (progress - shown) * 0.18 : progress;
     draw(clock.getElapsedTime());
-    raf = requestAnimationFrame(frame);
+    idle = moving ? 0 : idle + 1;
+    if (idle < 45) raf = requestAnimationFrame(frame);
+  }
+
+  function wake() {
+    idle = 0;
+    if (visible && !raf) raf = requestAnimationFrame(frame);
   }
 
   const ro = new ResizeObserver(resize);
@@ -423,6 +433,7 @@ export async function createCrash(canvas, { mobile = false, price = 40 } = {}) {
   return {
     setProgress(p) {
       progress = clamp(p);
+      wake();
     },
     /** Rendu immediat a une progression donnee (captures). */
     renderAt(p, t = 1) {

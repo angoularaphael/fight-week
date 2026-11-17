@@ -5,7 +5,7 @@
 .env.*
 .media-tmp/
 .vercel/
-data/
+/data/
 dist/
 media-src/seq/
 node_modules/

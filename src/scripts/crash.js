@@ -73,7 +73,6 @@ export function setupCrash(section = document.getElementById('offre-crash')) {
           crash = await createCrash(canvas, { mobile, price });
           crash.setProgress(progress);
           section.classList.add('has-webgl');
-          window.__crash = crash;
         } catch (err) {
           console.warn('[crash] 3D indisponible', err);
           section.classList.add('is-static');
@@ -82,7 +81,7 @@ export function setupCrash(section = document.getElementById('offre-crash')) {
       }
       crash?.setVisible(e.isIntersecting);
     },
-    { rootMargin: '60% 0px 60% 0px' }
+    { rootMargin: '25% 0px 25% 0px' }
   );
   io.observe(section);
 }
