@@ -54,7 +54,8 @@ async function grade(file, name, widths = [1600, 800]) {
 }
 
 async function images() {
-  for (const dir of ['moteka', 'gala', 'rendu']) {
+  const dirs = (process.env.MEDIA_DIRS || 'moteka,gala,rendu,boxe').split(',');
+  for (const dir of dirs) {
     for (const f of readdirSync(path.join(src, dir))) {
       const name = `${dir}-${f.replace(/\.(jpe?g|webp|png)$/i, '').replace(/-1200$/, '')}`;
       await grade(path.join(src, dir, f), name);
@@ -108,7 +109,7 @@ function heroVideo(w, h, tag) {
     () => clipShot(37.2, D, w, h, 3),
     () => photoShot(M('atelier-rouge.jpg'), D, w, h, 4, 1),
     () => clipShot(18.0, D, w, h, 5),
-    () => seqShot('ring', D, w, h, 6),
+    () => photoShot(path.join(src, 'rendu', 'ring-haut.png'), D, w, h, 6, 1),
     () => clipShot(42.6, D, w, h, 7),
   ].map((fn) => fn());
   // Enchainement en fondus rapides, dont un flash rouge au milieu.

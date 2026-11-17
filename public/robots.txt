@@ -5,6 +5,7 @@ User-agent: Googlebot
 Allow: /
 Disallow: /api/
 Disallow: /commande
+Disallow: /studio-3d
 
 User-agent: Googlebot-Image
 Allow: /
@@ -20,6 +21,7 @@ User-agent: Bingbot
 Allow: /
 Disallow: /api/
 Disallow: /commande
+Disallow: /studio-3d
 
 User-agent: OAI-SearchBot
 User-agent: ChatGPT-User
@@ -46,10 +48,12 @@ Allow: /llms.txt
 Allow: /
 Disallow: /api/
 Disallow: /commande
+Disallow: /studio-3d
 
 User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /commande
+Disallow: /studio-3d
 
 Sitemap: https://gala.boxingcenter.fr/sitemap.xml

@@ -347,8 +347,10 @@ export async function createScene(canvas, { mobile = false, onCarLoaded } = {}) 
           m.needsUpdate = true;
         }
       }
-      // Carrosserie peinte la plus grande = support des stickers.
-      if (mats.some((m) => /^Paint 1/.test(m?.name || ''))) {
+      // Carrosserie peinte la plus grande = support des stickers. Les noms de
+      // materiaux sont fusionnes a l'optimisation : on repere la peinture rouge.
+      const isPaint = (m) => /^Paint/.test(m?.name || '') || (m?.color && m.color.r > 0.25 && m.color.r > m.color.g * 3 && m.color.r > m.color.b * 3);
+      if (mats.some(isPaint)) {
         o.geometry.computeBoundingBox();
         const s = o.geometry.boundingBox.getSize(new THREE.Vector3()).length();
         if (s > bodySize) {
@@ -357,6 +359,9 @@ export async function createScene(canvas, { mobile = false, onCarLoaded } = {}) 
         }
       }
     });
+    const dbg = [];
+    model.traverse((o) => o.isMesh && dbg.push([o.name, (Array.isArray(o.material) ? o.material : [o.material]).map((m) => `${m.name}|${m.color?.getHexString()}|${Boolean(m.map)}`).join(',')]));
+    window.__galaCarMats = dbg;
     if (!body) return;
     model.updateMatrixWorld(true);
     const decalTex = new THREE.TextureLoader().load(BC_LOGO);
@@ -390,6 +395,7 @@ export async function createScene(canvas, { mobile = false, onCarLoaded } = {}) 
       scene.add(decal);
       decals.push(decal);
     }
+    window.__galaDecals = { body: body.name, count: decals.length, verts: decals.map((d) => d.geometry.attributes.position?.count || 0) };
   }
   const decals = [];
 

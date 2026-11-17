@@ -15,7 +15,7 @@ const IMPACT = 0.42; // progression de l'impact
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const lerp = (a, b, t) => a + (b - a) * t;
 const seg = (p, a, b) => clamp((p - a) / (b - a));
-const easeIn = (t) => t * t * t;
+const easeIn = (t) => t * t;
 const easeOut = (t) => 1 - Math.pow(1 - t, 3);
 const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
@@ -190,10 +190,14 @@ export async function createCrash(canvas, { mobile = false, price = 40 } = {}) {
   const paintCache = new Map();
   black.traverse((o) => {
     if (!o.isMesh) return;
+    // Apres compression (gltf-transform palette), la peinture n'a plus de nom
+    // "Paint" : ce sont les materiaux a vernis (clearcoat) de la carrosserie.
+    const isPaint = (m) => /paint/i.test(m?.name || '') || (m?.clearcoat > 0 && /^Body/i.test(o.name || ''));
     const swap = (m) => {
-      if (!m || !/paint/i.test(m.name || '')) return m;
+      if (!m || !isPaint(m)) return m;
       if (!paintCache.has(m)) {
         const c = m.clone();
+        c.map = null;
         c.color = new THREE.Color(0x1c1c1f);
         if ('clearcoat' in c) c.clearcoat = 1;
         c.metalness = Math.max(c.metalness ?? 0, 0.6);
@@ -285,7 +289,7 @@ export async function createCrash(canvas, { mobile = false, price = 40 } = {}) {
     const after = seg(p, IMPACT, 1);
     const recoil = easeOut(seg(p, IMPACT, IMPACT + 0.22));
     const impactX = HALF;
-    const startX = 15;
+    const startX = 10.5;
     const redX = after > 0 ? lerp(-impactX, -impactX - 2.4, recoil) : lerp(-startX, -impactX, a);
     const blackX = after > 0 ? lerp(impactX, impactX + 2.0, recoil) : lerp(startX, impactX, a);
     redRig.position.set(redX, 0, 0.35);
@@ -346,14 +350,20 @@ export async function createCrash(canvas, { mobile = false, price = 40 } = {}) {
     if (c > 0) {
       const camPos = camera.position;
       // Point d'arrivee : 60 % du chemin vers la camera, un peu sous l'axe de visee.
-      const target = new THREE.Vector3(0, 1.1, 0).lerp(camPos, 0.6);
-      target.y -= 0.15;
+      const target = new THREE.Vector3(0, 1.1, 0).lerp(camPos, 0.5);
+      // Laisse la place a l'offre HTML : a gauche sur ecran large, en haut sur mobile.
+      if (camera.aspect >= 0.8) {
+        target.x -= 1.9;
+        target.y += 0.15;
+      } else {
+        target.y += 1.15;
+      }
       card.position.set(
         lerp(0, target.x, c),
         lerp(0.9, target.y, c) + Math.sin(c * Math.PI) * 1.8 + (c >= 1 ? Math.sin(t * 1.6) * 0.04 : 0),
         lerp(0, target.z, c)
       );
-      card.scale.setScalar(lerp(0.12, 1, c));
+      card.scale.setScalar(lerp(0.12, camera.aspect >= 0.8 ? 0.9 : 0.8, c));
       // La face +z (texture) regarde la camera, puis la vrille s'amortit.
       card.lookAt(camPos);
       card.rotateY((1 - c) * Math.PI * 3);

@@ -5,6 +5,7 @@ import { DAYS, GARAGE_TRADES, SITE, VENUE, formatEuros } from '../../lib/event.j
 import { homeGraph } from '../data/seo.js';
 import { GALLERY, HERO_MEDIA, MANIFESTO_IMAGES, ROUND_IMAGES, SCENE_FALLBACK, TRADE_IMAGES, img } from '../data/media.js';
 import { FAQ } from '../data/faq.js';
+import Crash from '../components/Crash.astro';
 
 const title = 'Gala de boxe Fight and Furious, 11-13 décembre 2026 | Boxing Center x MOTEKA';
 const description =
@@ -47,7 +48,7 @@ const steps = [
     <div class="hero-grain" aria-hidden="true"></div>
     <div class="wrap hero-content">
       <div class="hero-logos">
-        <img src="/brand/boxing-center.png" alt="Boxing Center" width="214" height="100" />
+        <img src="/brand/boxing-center-blanc.png" alt="Boxing Center" width="214" height="100" />
         <span>x</span>
         <img src="/brand/moteka-logo-blanc.svg" alt="MOTEKA" width="240" height="29" />
       </div>
@@ -127,7 +128,7 @@ const steps = [
         <figure class="reveal-img small" data-parallax="10">
           <picture>
             <source srcset={img(MANIFESTO_IMAGES.small.name).avif} type="image/avif" />
-            <img src={img(MANIFESTO_IMAGES.small.name).src} srcset={img(MANIFESTO_IMAGES.small.name).srcset} sizes="(min-width: 900px) 30vw, 92vw" alt={MANIFESTO_IMAGES.small.alt} loading="lazy" width="1280" height="720" />
+            <img src={img(MANIFESTO_IMAGES.small.name).src} srcset={img(MANIFESTO_IMAGES.small.name).srcset} sizes="(min-width: 900px) 30vw, 92vw" alt={MANIFESTO_IMAGES.small.alt} loading="lazy" width="1600" height="1067" />
           </picture>
         </figure>
       </div>
@@ -166,6 +167,8 @@ const steps = [
       }
     </div>
   </section>
+
+  <Crash />
 
   <section id="garage" class="garage" aria-labelledby="garage-title">
     <div class="wrap garage-grid">
@@ -220,7 +223,7 @@ const steps = [
         ))
       }
     </div>
-    <p class="wrap credit">Images 3D générées pour Fight and Furious. Images du gala Boxing Center 2023. Garage : MOTEKA.</p>
+    <p class="wrap credit">Images 3D générées pour Fight and Furious. Photos : galas et salles Boxing Center (Axel Derewiany, Diego Valenzuela, G. Cepparo). Garage : MOTEKA.</p>
   </section>
 
   <section id="infos" class="infos-sec" aria-labelledby="infos-title">
