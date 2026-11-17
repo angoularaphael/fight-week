@@ -1,0 +1,160 @@
+---
+import Base from '../layouts/Base.astro';
+import { DAYS, GARAGE_TRADES, SITE, VENUE, formatEuros } from '../../lib/event.js';
+import { homeGraph } from '../data/seo.js';
+import { HERO_MEDIA } from '../data/media.js';
+import { FAQ } from '../data/faq.js';
+
+const title = 'Gala de boxe Fight and Furious, 11-13 décembre 2026 | Boxing Center x MOTEKA';
+const description =
+  'Gala de boxe Fight and Furious à Fenouillet : 3 jours de boxe au garage MOTEKA du 11 au 13 décembre 2026. Amateurs élites, loisirs, éducative. Billetterie ouverte.';
+
+const priceFrom = (day) => {
+  const prices = day.tariffs.map((t) => t.price_cents);
+  const min = Math.min(...prices);
+  return min === 0 ? 'Entrée gratuite sur réservation' : `À partir de ${formatEuros(min)}`;
+};
+
+const graph = homeGraph();
+graph['@graph'].push({
+  '@type': 'FAQPage',
+  mainEntity: FAQ.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+});
+---
+
+<Base title={title} description={description} path="/" jsonLd={graph}>
+  <section class="hero" aria-labelledby="hero-title">
+    <div
+      class="hero-media"
+      data-hero-video
+      data-video={HERO_MEDIA.video ? JSON.stringify(HERO_MEDIA.video) : undefined}
+      data-video-mobile={HERO_MEDIA.videoMobile ? JSON.stringify(HERO_MEDIA.videoMobile) : undefined}
+    >
+      {
+        HERO_MEDIA.poster && (
+          <picture>
+            {HERO_MEDIA.posterMobile && <source media="(max-width: 899px) and (orientation: portrait)" srcset={HERO_MEDIA.posterMobile} type="image/avif" />}
+            <source srcset={HERO_MEDIA.poster} type="image/avif" />
+            <img src={HERO_MEDIA.poster} alt="" width="1920" height="1080" fetchpriority="high" decoding="async" />
+          </picture>
+        )
+      }
+    </div>
+    <svg class="hero-bars" viewBox="0 0 100 60" aria-hidden="true"><path d="M32 4h16L22 56H6z" /><path d="M55 4h16L45 56H29z" /><path d="M78 4h16L68 56H52z" /></svg>
+    <div class="wrap hero-content">
+      <span class="kicker">Boxing Center x MOTEKA - Inauguration du garage</span>
+      <h1 id="hero-title" class="display"><span>Fight</span><span>and Furious</span></h1>
+      <p class="lead">{SITE.tagline} Trois jours de boxe sur un ring installé au milieu de l'atelier.</p>
+      <p class="dates">11, 12 et 13 décembre 2026 - {VENUE.name}, {VENUE.city}</p>
+      <div class="cta-row">
+        <a class="btn" href="/billetterie">Prendre mes billets</a>
+        <a class="btn btn-ghost" href="#rounds">Voir les 3 rounds</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="concept" aria-labelledby="concept-title">
+    <div class="wrap">
+      <p class="giant reveal" aria-hidden="true"><span class="fill">Le garage</span></p>
+      <p class="giant reveal" aria-hidden="true">devient le ring</p>
+      <div class="section-head reveal" style="margin-top:28px">
+        <h2 id="concept-title">Trois barres, trois rounds, trois jours</h2>
+        <p class="muted">
+          Les trois barres du logo MOTEKA deviennent les trois rounds du week-end. Pour l'ouverture de son garage à Fenouillet, MOTEKA accueille Boxing
+          Center : les voitures s'écartent, le ring s'installe sous les ponts élévateurs, et la boxe prend la place de la mécanique pendant trois jours.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="rounds" aria-labelledby="rounds-title">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="kicker">Programme</span>
+        <h2 id="rounds-title">Les 3 rounds du gala</h2>
+      </div>
+      <div class="rounds">
+        {
+          DAYS.map((day) => (
+            <article class={`round reveal ${day.theme === 'light' ? 'theme-light' : ''}`} id={`round-${day.round}`}>
+              <span class="round-num">ROUND {day.round}</span>
+              <h3>{day.title}</h3>
+              <p class="when">
+                {day.label}
+                <br />
+                <span class="muted">
+                  Portes {day.doors.replace(':', 'h')}, début {day.start.replace(':', 'h')}
+                </span>
+              </p>
+              <p class="muted">{day.summary}</p>
+              <p class="price">{priceFrom(day)}</p>
+              <a class="btn block" href={`/billetterie?jour=${day.id}`}>
+                Réserver le round {day.round}
+              </a>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="garage" aria-labelledby="garage-title">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="kicker">L'hôte</span>
+        <h2 id="garage-title">MOTEKA ouvre son garage à Fenouillet</h2>
+        <p class="muted">
+          Garage multimarques au nord de Toulouse, MOTEKA réunit huit métiers sous le même toit. Le gala marque l'inauguration de l'atelier du {VENUE.street}.
+        </p>
+      </div>
+      <div class="trades reveal">
+        {
+          GARAGE_TRADES.map((t, i) => (
+            <div class="trade">
+              <span class="n">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{t.name}</h3>
+              <p>{t.text}</p>
+            </div>
+          ))
+        }
+      </div>
+      <p style="margin-top:22px">
+        <a class="btn btn-ghost" href="https://www.moteka.fr" rel="noopener">Découvrir MOTEKA</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="infos" aria-labelledby="infos-title">
+    <div class="wrap infos">
+      <div class="reveal">
+        <span class="kicker">Infos pratiques</span>
+        <h2 id="infos-title">Venir au gala</h2>
+        <div class="card">
+          <p>
+            <strong>{VENUE.name}</strong><br />
+            {VENUE.street}, {VENUE.postalCode} {VENUE.city}
+          </p>
+          <p class="muted">
+            Billets nominatifs avec QR code, envoyés par e-mail. Un billet par personne et par jour, contrôlé à l'entrée. Six billets maximum par commande.
+          </p>
+          <a class="btn btn-ghost" href={VENUE.mapsUrl} rel="noopener">Itinéraire</a>
+        </div>
+      </div>
+      <div class="faq reveal">
+        <h2>Questions fréquentes</h2>
+        {
+          FAQ.map((f) => (
+            <details>
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <script>
+    import '../scripts/hero-video.js';
+  </script>
+</Base>

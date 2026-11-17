@@ -1,0 +1,36 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title="Ma commande | Fight and Furious"
+  description="Suivi de votre commande de billets Fight and Furious."
+  path="/commande"
+  robots="noindex, nofollow"
+  referrer="no-referrer"
+  jsonLd={null}
+>
+  <section class="page-head">
+    <div class="wrap">
+      <span class="kicker">Commande</span>
+      <h1 class="display" id="order-title">Votre commande</h1>
+      <p id="order-status" class="muted" role="status" aria-live="polite">Chargement...</p>
+    </div>
+  </section>
+  <section class="section" style="padding-top:16px">
+    <div class="wrap">
+      <div id="order-detail" hidden>
+        <p id="order-summary"></p>
+        <p><button id="pdf-btn" class="btn" type="button" hidden>Télécharger mes billets (PDF)</button></p>
+        <div id="tickets" class="tickets-grid"></div>
+      </div>
+      <div id="order-missing" class="card" hidden>
+        <p>Cette commande n'est pas enregistrée sur cet appareil. Vos billets ont été envoyés par e-mail après le paiement.</p>
+        <a class="btn" href="/billetterie#renvoi">Renvoyer mes billets</a>
+      </div>
+    </div>
+  </section>
+  <script>
+    import '../scripts/commande.js';
+  </script>
+</Base>

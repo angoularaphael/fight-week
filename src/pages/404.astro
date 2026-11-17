@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title="Page introuvable | Fight and Furious"
+  description="Cette page du gala Fight and Furious n'existe pas ou a été déplacée. Retrouvez le programme des 3 rounds et la billetterie."
+  path="/404"
+  robots="noindex, follow"
+>
+  <section class="hero" style="min-height:70svh">
+    <svg class="hero-bars" viewBox="0 0 100 60" aria-hidden="true"><path d="M32 4h16L22 56H6z" /><path d="M55 4h16L45 56H29z" /><path d="M78 4h16L68 56H52z" /></svg>
+    <div class="wrap hero-content">
+      <span class="kicker">Erreur 404</span>
+      <h1 class="display"><span>KO technique</span></h1>
+      <p class="lead">Cette page n'existe pas, ou elle a quitté le ring.</p>
+      <div class="cta-row">
+        <a class="btn" href="/">Retour à l'accueil</a>
+        <a class="btn btn-ghost" href="/billetterie">Billetterie</a>
+      </div>
+    </div>
+  </section>
+</Base>

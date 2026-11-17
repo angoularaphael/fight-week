@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE } from '../../lib/event.js';
+import { HOST, SELLER } from '../data/legal.js';
+---
+
+<Base
+  title="Mentions légales | Fight and Furious, gala de boxe"
+  description="Mentions légales du site Fight and Furious, gala de boxe Boxing Center x MOTEKA : éditeur, hébergeur, propriété des contenus et données personnelles."
+  path="/mentions-legales"
+>
+  <section class="page-head">
+    <div class="wrap">
+      <h1 class="display">Mentions légales</h1>
+    </div>
+  </section>
+  <section class="section" style="padding-top:8px">
+    <div class="wrap prose">
+      <h2>Éditeur</h2>
+      <p>
+        {SITE.url.replace('https://', '')} est édité par {SELLER.name} ({SELLER.legalForm}, SIRET {SELLER.siret}), {SELLER.address}. Directeur de la
+        publication : {SELLER.publisher}. Contact : <a href={`mailto:${SELLER.email}`}>{SELLER.email}</a>.
+      </p>
+      <h2>Hébergement</h2>
+      <p>{HOST.name}, {HOST.address}, {HOST.site}.</p>
+      <h2>Marques et contenus</h2>
+      <p>
+        Les logos Boxing Center et MOTEKA appartiennent à leurs titulaires respectifs. Les visuels de véhicules du site ne représentent aucune marque
+        automobile en particulier. Les photographies de boxe sont créditées à leurs auteurs.
+      </p>
+      <h2>Données personnelles et cookies</h2>
+      <p>
+        Le site ne dépose aucun cookie publicitaire ni de mesure d'audience. Le jeton de votre commande est gardé dans le stockage local de votre navigateur
+        pour afficher vos billets. Les données de commande sont traitées comme indiqué dans les <a href="/cgv">conditions de vente</a>.
+      </p>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,21 @@
+---
+const path = Astro.url.pathname;
+const links = [
+  { href: '/#rounds', label: 'Les 3 rounds' },
+  { href: '/#garage', label: 'Le garage' },
+  { href: '/#infos', label: 'Infos' },
+];
+---
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <a class="brand" href="/" aria-label="Fight and Furious, accueil">
+      <svg class="brand-bars" viewBox="0 0 100 60" aria-hidden="true"><path d="M32 4h16L22 56H6z" /><path d="M55 4h16L45 56H29z" /><path d="M78 4h16L68 56H52z" /></svg>
+      <span class="brand-name">Fight and Furious</span>
+    </a>
+    <nav class="nav" aria-label="Navigation principale">
+      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+      <a class="btn btn-sm" href="/billetterie" aria-current={path.startsWith('/billetterie') ? 'page' : undefined}>Billetterie</a>
+    </nav>
+  </div>
+</header>

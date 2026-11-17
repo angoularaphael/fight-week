@@ -1,0 +1,142 @@
+---
+import Base from '../layouts/Base.astro';
+import { DAYS, MAX_TICKETS_PER_ORDER, RESERVATION_MINUTES, formatEuros } from '../../lib/event.js';
+import { baseGraph, eventLd } from '../data/seo.js';
+
+const title = 'Billetterie gala de boxe Fight and Furious | Fenouillet, décembre 2026';
+const description =
+  'Billetterie du gala de boxe Fight and Furious : réservez vos billets QR pour le 11, 12 ou 13 décembre 2026 au garage MOTEKA de Fenouillet. Paiement carte ou PayPal.';
+const publicDays = DAYS.map((d) => ({ id: d.id, round: d.round, label: d.label, title: d.title, tariffs: d.tariffs }));
+---
+
+<Base title={title} description={description} path="/billetterie" jsonLd={baseGraph(DAYS.map(eventLd))}>
+  <section class="page-head">
+    <div class="wrap">
+      <span class="kicker">Billetterie</span>
+      <h1 class="display">Prenez place au bord du ring</h1>
+      <p class="muted">Un billet par personne et par jour, QR code nominatif envoyé par e-mail. {MAX_TICKETS_PER_ORDER} billets maximum par commande.</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:24px">
+    <div class="wrap">
+      <div id="closed" class="card" hidden>
+        <h2>La vente ouvre très bientôt</h2>
+        <p class="muted">Laissez votre e-mail : vous serez prévenu dès l'ouverture de la billetterie.</p>
+        <form id="waitlist-form" class="form-grid" novalidate>
+          <div class="field">
+            <label for="wl-email">E-mail</label>
+            <input id="wl-email" name="email" type="email" autocomplete="email" required />
+          </div>
+          <button class="btn" type="submit">Me prévenir</button>
+          <p class="form-msg" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+
+      <form id="checkout-form" class="checkout-layout" novalidate>
+        <div>
+          <fieldset style="border:0;padding:0;margin:0 0 26px">
+            <legend><h2 style="font-size:22px">1. Choisissez votre jour</h2></legend>
+            <div class="day-picker">
+              {
+                DAYS.map((d, i) => (
+                  <div class="day-option">
+                    <input type="radio" name="day" id={`day-${d.id}`} value={d.id} checked={i === 0} />
+                    <label for={`day-${d.id}`}>
+                      <span class="round-num">ROUND {d.round}</span>
+                      <br />
+                      <strong>{d.title}</strong>
+                      <br />
+                      <span class="muted">{d.label}</span>
+                      <span class="muted day-state" data-day-state={d.id} />
+                    </label>
+                  </div>
+                ))
+              }
+            </div>
+          </fieldset>
+
+          <fieldset style="border:0;padding:0;margin:0 0 26px">
+            <legend><h2 style="font-size:22px">2. Nombre de billets</h2></legend>
+            {
+              DAYS.map((d) => (
+                <div class="tariffs" data-tariffs={d.id} hidden={d.id !== DAYS[0].id}>
+                  {d.tariffs.map((t) => (
+                    <div class="qty-row">
+                      <div>
+                        <strong>{t.label}</strong>
+                        <br />
+                        <span class="muted">{formatEuros(t.price_cents)}</span>
+                      </div>
+                      <div class="stepper" data-day={d.id} data-tariff={t.id}>
+                        <button type="button" data-step="-1" aria-label={`Retirer un billet ${t.label}`}>-</button>
+                        <output aria-live="polite">0</output>
+                        <button type="button" data-step="1" aria-label={`Ajouter un billet ${t.label}`}>+</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))
+            }
+          </fieldset>
+
+          <fieldset style="border:0;padding:0;margin:0 0 26px">
+            <legend><h2 style="font-size:22px">3. Vos coordonnées</h2></legend>
+            <div class="form-grid two">
+              <div class="field">
+                <label for="first_name">Prénom</label>
+                <input id="first_name" name="first_name" autocomplete="given-name" maxlength="60" required />
+              </div>
+              <div class="field">
+                <label for="last_name">Nom</label>
+                <input id="last_name" name="last_name" autocomplete="family-name" maxlength="60" required />
+              </div>
+              <div class="field">
+                <label for="email">E-mail (réception des billets)</label>
+                <input id="email" name="email" type="email" autocomplete="email" maxlength="254" required />
+              </div>
+              <div class="field">
+                <label for="phone">Téléphone (facultatif)</label>
+                <input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="20" />
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <aside class="card">
+          <h2 style="font-size:22px">Récapitulatif</h2>
+          <p id="summary-day" class="muted"></p>
+          <div class="total"><span>Total</span><span id="total">0 EUR</span></div>
+          <div id="pay-block" class="pay-methods"></div>
+          <label class="check" style="margin:16px 0">
+            <input type="checkbox" id="accept_cgv" required />
+            <span>J'accepte les <a href="/cgv" target="_blank" rel="noopener">conditions de vente</a>. Billets pour un événement daté : pas de droit de rétractation.</span>
+          </label>
+          <button id="pay-btn" class="btn block" type="submit">Payer</button>
+          <p class="muted" style="font-size:14px">Vos places sont bloquées {RESERVATION_MINUTES} minutes pendant le paiement.</p>
+          <p id="checkout-msg" class="form-msg notice" role="alert"></p>
+        </aside>
+      </form>
+
+      <div id="renvoi" class="card" style="margin-top:48px">
+        <h2>Renvoyer mes billets</h2>
+        <p class="muted">Billets perdus ? Indiquez l'e-mail utilisé pour la commande, nous les renvoyons.</p>
+        <form id="resend-form" class="form-grid two" novalidate>
+          <div class="field">
+            <label for="resend-email">E-mail de la commande</label>
+            <input id="resend-email" name="email" type="email" autocomplete="email" required />
+          </div>
+          <div class="field" style="align-self:end">
+            <button class="btn block" type="submit">Renvoyer</button>
+          </div>
+          <p class="form-msg" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <script id="gala-days" type="application/json" set:html={JSON.stringify(publicDays)} />
+  <script>
+    import '../scripts/billetterie.js';
+  </script>
+</Base>

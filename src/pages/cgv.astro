@@ -1,0 +1,77 @@
+---
+import Base from '../layouts/Base.astro';
+import { MAX_TICKETS_PER_ORDER, RESERVATION_MINUTES, SITE, VENUE } from '../../lib/event.js';
+import { SELLER } from '../data/legal.js';
+---
+
+<Base
+  title="Conditions générales de vente billetterie | Fight and Furious"
+  description="Conditions générales de vente de la billetterie Fight and Furious : billets nominatifs QR, paiement carte ou PayPal, pas de droit de rétractation, remboursement si annulation."
+  path="/cgv"
+>
+  <section class="page-head">
+    <div class="wrap">
+      <span class="kicker">Billetterie</span>
+      <h1 class="display">Conditions de vente</h1>
+    </div>
+  </section>
+  <section class="section" style="padding-top:8px">
+    <div class="wrap prose">
+      <h2>1. Vendeur</h2>
+      <p>
+        Les billets du gala {SITE.name} sont vendus par {SELLER.name} ({SELLER.legalForm}, SIRET {SELLER.siret}, {SELLER.address}), contact :
+        <a href={`mailto:${SELLER.email}`}>{SELLER.email}</a>. L'événement se tient au {VENUE.name}, {VENUE.street}, {VENUE.postalCode} {VENUE.city}, partenaire de
+        l'événement.
+      </p>
+
+      <h2>2. Billets</h2>
+      <p>
+        Chaque billet est nominatif, valable pour un seul jour (vendredi 11, samedi 12 ou dimanche 13 décembre 2026) et pour une seule entrée. Il porte un QR code
+        signé, contrôlé à l'entrée : la première présentation fait foi, les copies suivantes sont refusées. Une commande compte au plus {MAX_TICKETS_PER_ORDER} billets.
+      </p>
+
+      <h2>3. Prix et paiement</h2>
+      <p>
+        Les prix sont indiqués en euros, toutes taxes comprises, et sont ceux affichés au moment de la commande. Le paiement se fait par carte bancaire via
+        PayPlug ou par PayPal. Les places choisies sont bloquées {RESERVATION_MINUTES} minutes pendant le paiement ; au-delà, elles peuvent être remises en vente.
+        La commande est ferme à la confirmation du paiement par le prestataire. Les billets gratuits du dimanche sont soumis aux mêmes règles de réservation.
+      </p>
+
+      <h2>4. Livraison des billets</h2>
+      <p>
+        Les billets sont envoyés par e-mail (PDF, image et fichier calendrier) à l'adresse saisie, et restent consultables depuis la page de commande sur
+        l'appareil utilisé pour l'achat. Un renvoi est possible depuis la page billetterie.
+      </p>
+
+      <h2>5. Absence de droit de rétractation</h2>
+      <p>
+        Conformément à l'article L221-28, 12° du Code de la consommation, le droit de rétractation ne s'applique pas aux prestations de services de loisirs
+        fournies à une date déterminée. Les billets ne sont ni repris ni échangés.
+      </p>
+
+      <h2>6. Annulation ou report</h2>
+      <p>
+        En cas d'annulation d'une journée par l'organisateur, le prix des billets concernés est remboursé sur le moyen de paiement utilisé, sous 30 jours. En cas de
+        report, les billets restent valables pour la nouvelle date, ou sont remboursés sur demande.
+      </p>
+
+      <h2>7. Accès et sécurité</h2>
+      <p>
+        L'accès peut être refusé à toute personne au comportement dangereux ou présentant un billet déjà utilisé. Les mineurs de moins de 16 ans viennent
+        accompagnés d'un adulte. Le programme des combats peut évoluer jusqu'au jour de l'événement.
+      </p>
+
+      <h2>8. Données personnelles</h2>
+      <p>
+        Les nom, prénom, e-mail et téléphone servent uniquement à la gestion de la commande et au contrôle d'entrée. Ils sont conservés 12 mois après
+        l'événement. Vous pouvez demander leur accès ou leur suppression à <a href={`mailto:${SELLER.email}`}>{SELLER.email}</a>.
+      </p>
+
+      <h2>9. Litiges</h2>
+      <p>
+        Ces conditions sont soumises au droit français. En cas de litige, une solution amiable est recherchée en priorité ; à défaut, vous pouvez recourir
+        gratuitement à un médiateur de la consommation.
+      </p>
+    </div>
+  </section>
+</Base>

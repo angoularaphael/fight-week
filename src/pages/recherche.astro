@@ -1,0 +1,63 @@
+---
+import Base from '../layouts/Base.astro';
+import { searchIndex } from '../data/pages.js';
+
+const index = searchIndex();
+---
+
+<Base
+  title="Recherche | Fight and Furious, gala de boxe à Fenouillet"
+  description="Recherche sur le site du gala de boxe Fight and Furious : programme des 3 rounds, billetterie, garage MOTEKA, infos pratiques et questions fréquentes."
+  path="/recherche"
+  robots="noindex, follow"
+>
+  <section class="page-head">
+    <div class="wrap">
+      <h1 class="display">Recherche</h1>
+      <form action="/recherche" method="get" role="search" class="form-grid two" style="max-width:640px">
+        <div class="field">
+          <label for="q">Que cherchez-vous ?</label>
+          <input id="q" name="q" type="search" autocomplete="off" />
+        </div>
+        <div class="field" style="align-self:end"><button class="btn block" type="submit">Chercher</button></div>
+      </form>
+    </div>
+  </section>
+  <section class="section" style="padding-top:16px">
+    <div class="wrap">
+      <p id="search-count" class="muted" role="status" aria-live="polite"></p>
+      <ul id="results" style="list-style:none;padding:0;display:grid;gap:12px">
+        {
+          index.map((it) => (
+            <li class="card" data-text={`${it.title} ${it.text}`.toLowerCase()}>
+              <a href={it.url}>
+                <strong>{it.title}</strong>
+              </a>
+              <p class="muted" style="margin:6px 0 0">{it.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+  <script>
+    const norm = (s) =>
+      String(s || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '');
+    const q = new URLSearchParams(location.search).get('q') || '';
+    const input = document.getElementById('q');
+    input.value = q;
+    const terms = norm(q).split(/\s+/).filter(Boolean);
+    let shown = 0;
+    document.querySelectorAll('#results li').forEach((li) => {
+      const text = norm(li.dataset.text);
+      const ok = terms.every((t) => text.includes(t));
+      li.hidden = !ok;
+      if (ok) shown += 1;
+    });
+    const count = document.getElementById('search-count');
+    if (terms.length) count.textContent = shown ? `${shown} résultat(s) pour "${q}"` : `Aucun résultat pour "${q}".`;
+  </script>
+</Base>
