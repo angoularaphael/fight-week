@@ -7,6 +7,7 @@ import { SITE } from '../../lib/event.js';
 import { baseGraph } from '../data/seo.js';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import FightFurious from '../components/FightFurious.astro';
 
 const {
   title,
@@ -83,10 +84,11 @@ const gsc = import.meta.env.PUBLIC_GSC_VERIFICATION;
     <main id="contenu">
       <slot />
     </main>
+    <FightFurious />
     <SiteFooter />
     <script>
       import '../scripts/reveal.js';
     </script>
-    <script src="https://fight-and-furious.boxingcenter.fr/ff-promo.js?v=2" data-src="gal" data-focus="concours" defer></script>
+    <script src="https://fight-and-furious.boxingcenter.fr/ff-promo.js?v=3" data-src="gal" data-focus="concours" defer></script>
   </body>
 </html>

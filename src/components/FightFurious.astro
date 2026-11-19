@@ -1,0 +1,20 @@
+---
+const src = 'gal';
+const eventUrl = `https://fight-and-furious.boxingcenter.fr/?src=${src}`;
+const billetsUrl = `https://boutique.boxingcenter.fr/billetterie?src=${src}`;
+---
+
+<section class="ff-section" id="fight-and-furious" aria-label="Jeu concours FIGHT and Furious">
+  <div class="ff-section__in wrap">
+    <p class="ff-section__k">Jeu concours jusqu'au 28 novembre</p>
+    <h2 class="ff-section__t">Tickets et tirages FIGHT &amp; Furious</h2>
+    <p class="ff-section__p">
+      Inscrivez-vous au jeu concours Moteka, invitez 2 ami(e)s, deposez un avis Google. Billets du gala aussi en vente.
+    </p>
+    <div class="ff-section__row">
+      <a class="ff-btn ff-btn--on" href={`${eventUrl}#concours`}>Jeu concours</a>
+      <a class="ff-btn ff-btn--ghost" href={billetsUrl}>Acheter un billet</a>
+      <a class="ff-btn ff-btn--line" href={eventUrl}>Page evenement</a>
+    </div>
+  </div>
+</section>
